@@ -1,4 +1,4 @@
-FROM python:3.11-alpine as builder
+FROM python:3.11-alpine AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ ENV PYTHONUNBUFFERED=1
 COPY pyproject.toml /app
 
 RUN pip install --no-cache-dir --upgrade pip && \
-		pip install --no-cache-dir ".[test]"
+		pip install --no-cache-dir .
 
 
 FROM python:3.11-alpine
@@ -21,11 +21,9 @@ WORKDIR /app
 
 COPY --from=builder /app/venv /app/venv
 COPY src /app/src
-COPY tests /app/tests
 
-ENV PYTHONPATH=/app
 ENV PATH="/app/venv/bin:$PATH"
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-CMD [ "pytest", "tests" ]
+CMD [ "uvicorn", "src.main:app", "--reload", "--host", "0.0.0.0", "--port", "8075" ]

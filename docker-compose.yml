@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  ubuntu:
+    image: ubuntu:latest
+    container_name: runner
+    tty: true
+    stdin_open: true
+    command: bash
+    volumes:
+      - ./data:/root/workspace
